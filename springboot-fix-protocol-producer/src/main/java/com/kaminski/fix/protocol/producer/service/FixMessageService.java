@@ -1,19 +1,14 @@
 package com.kaminski.fix.protocol.producer.service;
 
 
-import com.kaminski.fix.protocol.producer.domain.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import quickfix.Session;
-import quickfix.SessionNotFound;
-import quickfix.SocketInitiator;
+import quickfix.*;
 import quickfix.field.MsgType;
-import quickfix.field.OrderQty;
-import quickfix.field.Price;
+import quickfix.field.NoRelatedSym;
+import quickfix.field.QuoteReqID;
 import quickfix.field.Symbol;
-import quickfix.fix40.NewOrderSingle;
 
 @Slf4j
 @Service
@@ -22,21 +17,26 @@ public class FixMessageService {
 
     private final SocketInitiator initiator;
 
-    public void sendOrder(Order order){
+    public void sendOrder(){
 
         try {
 
             log.info("Send new message.");
 
-            var message = new NewOrderSingle();
+            var quoteRequest = new Message();
+            quoteRequest.getHeader().setString(MsgType.FIELD, MsgType.QUOTE_REQUEST);
+            quoteRequest.setString(QuoteReqID.FIELD, "12345");
+            quoteRequest.setInt(NoRelatedSym.FIELD, 2);
 
-            message.getHeader().setString(MsgType.FIELD, "D");
-            message.setString(Symbol.FIELD, order.getSymbol());
-            message.setInt(OrderQty.FIELD, order.getQuantity());
-            message.setDouble(Price.FIELD, order.getPrice());
+            Group relatedSymbolGroup = new Group(NoRelatedSym.FIELD, Symbol.FIELD);
+            relatedSymbolGroup.setString(Symbol.FIELD, "USD");
+            quoteRequest.addGroup(relatedSymbolGroup);
+
+            relatedSymbolGroup.setString(Symbol.FIELD, "MSFT");
+            quoteRequest.addGroup(relatedSymbolGroup);
 
             var sessionId = initiator.getSessions().get(0);
-            Session.sendToTarget(message, sessionId);
+            Session.sendToTarget(quoteRequest, sessionId);
 
         } catch (SessionNotFound e) {
             throw new RuntimeException(e);

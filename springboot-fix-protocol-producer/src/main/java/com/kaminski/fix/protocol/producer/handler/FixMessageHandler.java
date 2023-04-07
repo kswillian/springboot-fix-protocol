@@ -10,17 +10,17 @@ public class FixMessageHandler implements Application {
 
     @Override
     public void onCreate(SessionID sessionID) {
-        log.info("onCreate");
+        log.info("onCreate {}", sessionID);
     }
 
     @Override
     public void onLogon(SessionID sessionID) {
-        log.info("onLogon");
+        log.info("onLogon {}", sessionID);
     }
 
     @Override
     public void onLogout(SessionID sessionID) {
-        log.info("onLogout");
+        log.info("onLogout {}", sessionID);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class FixMessageHandler implements Application {
 
     @Override
     public void fromAdmin(Message message, SessionID sessionID) throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, RejectLogon {
-        log.info("fromAdmin");
+        log.info("fromAdmin {}", message);
     }
 
     @Override
