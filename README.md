@@ -23,16 +23,8 @@ Execute os dois projetos separadamente. As definições de portas já estão def
   
 ## Testes
   
-A aplicação producer é basicamente o produtor de mensagens via protocolo Fix, nele foi configurado um endpoint para que seja possivel gerar uma mensagem para ue seus consumidores possam receber e realizar o seu processamento das mensagens.
+A aplicação producer é basicamente o produtor de mensagens via protocolo Fix, nele foi configurado um endpoint para que seja possivel enviar uma requisição POST sem nenhum payload gerar uma mensagem para que seus consumidores possam receber e processar. Abaixo segue o endpoint do produtor de mensagens:
   
 ```bash
 http://localhost:8081/order
-```
-```bash
-  {
-    "orderId": "1",
-    "symbol": "Test",
-    "quantity": 1,
-    "price": 1000
-  }
 ```
